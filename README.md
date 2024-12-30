@@ -12,5 +12,4 @@ run the following commands:<br/>
 -- cd pazel-front<br/>
 -- npm install (may take a minute)<br/>
 -- npm run dev
-
     
