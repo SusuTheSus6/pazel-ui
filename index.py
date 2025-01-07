@@ -3,12 +3,14 @@ import os
 from flask_cors import CORS
 import json
 
+os.environ["FLASK_ENV"] = "development"
+os.environ["FLASK_DEBUG"] = "1"
 app = Flask(__name__)
 CORS(app)
 
 BASE_DIR = os.getcwd()  # Base directory for file and folder operations
 TARGET_RESULTS_FOLDER = os.path.join(BASE_DIR, 'results')
-ROOT_DIRECTORY = "pazel-front/public"
+ROOT_DIRECTORY = "pazel-front\\public"
 
 # Utility function
 def safe_path(path):
@@ -45,7 +47,7 @@ def get_all_files():
                     continue
                 file_path = os.path.relpath(os.path.join(root, step), BASE_DIR)
                 data.append({
-                    "src": file_path.replace(ROOT_DIRECTORY,"")
+                    "src": file_path.replace(ROOT_DIRECTORY, "src").replace("\\", "/")
                 })
             res.append({
                 'ref': root,
@@ -162,4 +164,4 @@ def rename():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5004)
+    app.run(debug=True, host='0.0.0.0', port=5004, use_reloader=False)
