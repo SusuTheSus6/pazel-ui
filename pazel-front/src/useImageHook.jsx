@@ -8,7 +8,7 @@ const useImage = (path) => {
         const fetchImage = async () => {
             try {
                 console.log("@@@ path", path)
-                const response = await import(path) // change relative path to suit your needs
+                const response = await import("./" + path) // change relative path to suit your needs
                 setImage(response.default)
             } catch (err) {
                 console.log("@@@ error", error)
