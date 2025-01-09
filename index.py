@@ -50,7 +50,7 @@ def get_all_files():
                     continue
                 file_path = os.path.relpath(os.path.join(root, step), BASE_DIR)
                 data.append({
-                    "src": file_path.replace(ROOT_DIRECTORY, "src").replace("\\", "/")
+                    "src": file_path.replace(ROOT_DIRECTORY, "").replace("\\", "/")
                 })
             res.append({
                 'ref': root,
