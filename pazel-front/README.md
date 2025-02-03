@@ -12,8 +12,5 @@ run the following commands:<br/>
 -- cd pazel-front<br/>
 -- npm install (may take a minute)<br/>
 -- npm run dev
--- place the data in the structure <runId/step/file.png> in directories pazel-front\public\assets, pazel-front\src\assets 
--- open http://localhost:5173/<runID>
--- resluts are in \results\<runID>
 
     

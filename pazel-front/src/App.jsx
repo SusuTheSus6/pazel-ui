@@ -31,7 +31,6 @@ function App() {
       }
     }).then(e => e.json());
     const _images = response.files;
-    console.log("@@@ _images", _images)
     setImages(_images)
   }
 
