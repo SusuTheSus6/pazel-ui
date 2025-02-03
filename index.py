@@ -2,19 +2,13 @@ from flask import Flask, request, jsonify
 import os
 from flask_cors import CORS
 import json
-import shutil
 
-os.environ["FLASK_ENV"] = "development"
-os.environ["FLASK_DEBUG"] = "1"
 app = Flask(__name__)
 CORS(app)
 
 BASE_DIR = os.getcwd()  # Base directory for file and folder operations
 TARGET_RESULTS_FOLDER = os.path.join(BASE_DIR, 'results')
-TRAIN_BAD_FOLDER = os.path.join(BASE_DIR, 'bad/')
-TRAIN_GOOD_FOLDER = os.path.join(BASE_DIR, 'good/')
 ROOT_DIRECTORY = "pazel-front\\public"
-
 # Utility function
 def safe_path(path):
     """Ensure operations are performed within the base directory."""
@@ -50,7 +44,7 @@ def get_all_files():
                     continue
                 file_path = os.path.relpath(os.path.join(root, step), BASE_DIR)
                 data.append({
-                    "src": file_path.replace(ROOT_DIRECTORY, "src").replace("\\", "/")
+                    "src": file_path.replace(ROOT_DIRECTORY,"").replace("\\", "/")
                 })
             res.append({
                 'ref': root,
@@ -62,50 +56,15 @@ def get_all_files():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-def copy_file(src_file, dest_folder):
-    shutil.copy(src_file, dest_folder)
-
-def copy_all_files(src_folder, dest_folder):
-    try:
-        # Ensure the destination folder exists, if not, create it
-        if not os.path.exists(dest_folder):
-            os.makedirs(dest_folder)
-
-        # Iterate through all files in the source folder
-        for filename in os.listdir(src_folder):
-            src_file = os.path.join(src_folder, filename)
-
-            # Check if it's a file and not a directory
-            if os.path.isfile(src_file):
-                shutil.copy(src_file, dest_folder)
-                print(f"File '{filename}' copied to '{dest_folder}' successfully.")
-            else:
-                print(f"Skipping directory '{filename}'.")
-
-    except FileNotFoundError:
-        print(f"Error: The source folder '{src_folder}' does not exist.")
-    except PermissionError:
-        print(f"Error: Permission denied while copying to '{dest_folder}'.")
-    except Exception as e:
-        print(f"An error occurred: {e}")
-
 def createFileForDebug(runId, data_to_write):
     try:
         os.makedirs(TARGET_RESULTS_FOLDER + "/" + runId, exist_ok=True)
 
         # Combine folder path and file name
         file_path = os.path.join(TARGET_RESULTS_FOLDER + "/" + runId, 'debug.txt')
+
         with open(file_path, "w") as file:
             json.dump(data_to_write, file, indent=4)
-
-        good_images = [x['fullSrc'] + "\\" + os.path.basename(x['src']) for x in list(data_to_write)]
-        for index, x in enumerate(data_to_write):
-            if x['selectedStep'] != index:
-                copy_all_files(x['fullSrc'], TRAIN_BAD_FOLDER)
-                continue
-
-        for imagePath in good_images:
-            copy_file(imagePath, TRAIN_GOOD_FOLDER)
 
     except Exception as e:
         print("Error saving debug")
@@ -126,11 +85,18 @@ def batch_create():
 
         if not run_id:
             return jsonify({'error': 'Bad run id'}), 400
+        results = []
 
         try:
             createFileForDebug(run_id, steps)
         except Exception as e:
             return jsonify({'error': str(e)}), 500
+
+        # for singleStep in steps:
+        #     # Validate input structure for each operation
+        #     path = singleStep.get('src')
+        #     selectedStep = singleStep.get('selectedStep', False)
+        #     fullSrc = singleStep.get('fullSrc', False)
 
         return jsonify({'ok': True, 'error': None})
     except Exception as e:
@@ -195,4 +161,4 @@ def rename():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5004, use_reloader=False)
+    app.run(debug=True, host='0.0.0.0', port=5004)
