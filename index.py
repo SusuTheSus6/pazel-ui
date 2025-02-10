@@ -71,6 +71,39 @@ def createFileForDebug(runId, data_to_write):
         raise jsonify({'error': str(e)})(500)
 
 
+def printForDebug(steps):
+    for step in steps:
+        try:
+            if not isinstance(step, dict):
+                raise TypeError("Step must be a dictionary")
+    
+            src = step.get('src')
+            selected_step = step.get('selectedStep')
+            full_src = step.get('fullSrc')
+    
+            if src:
+                print(f"Source: {src}")
+            else:
+                print("Source not found")
+    
+            if selected_step is not None:  # Check if selectedStep is present (can be 0)
+                print(f"Selected Step: {selected_step}")
+            else:
+                print("Selected step not found")
+    
+            if full_src:
+                print(f"Full Source: {full_src}")
+            else:
+                print("Full source not found")
+
+        except TypeError as e:
+            print(f"Type Error: {e}")
+            print(f"Problematic step: {step}")
+            print("-" * 20)
+        except Exception as e:
+            print(f"An unexpected error occurred: {e}")
+            print(f"Problematic step: {step}")
+            print("-" * 20)
 
 @app.route('/batch-submit', methods=['POST'])
 def batch_create():
@@ -80,6 +113,9 @@ def batch_create():
         steps = body.get('steps', [])
         run_id = body.get('run_id', '')
 
+        print('Steps got here with len of')
+        print(len(steps))
+        printForDebug(steps)
         if not isinstance(steps, list):
             return jsonify({'error': 'Input must be a list of operations'}), 400
 
