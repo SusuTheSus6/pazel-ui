@@ -45,6 +45,7 @@ function App() {
     if(step === images.length) {
       const run_id = window.location.pathname.replace("/", "")
       setIsFinished(true)
+      console.log("This is what we are sending to the backend!", updatedBatch)
       sendFinishToServer({
         steps: updatedBatch,
         run_id
