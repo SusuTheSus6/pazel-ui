@@ -78,13 +78,15 @@ function App() {
 
   function onSubmit(selected, selectedStep) {
     const normalizeStep = selectedStep-1;
-    console.log("@@@ normalizeStep", normalizeStep)
+    console.log("selected: ", selected)
+    console.log("allSelected ", allSelected)
     const newSelected = [...allSelected, {
       src: selected.src,
       selectedStep: normalizeStep,
       fullSrc: images[normalizeStep].ref
     }]
     setAllSelected(newSelected)
+    console.log("selected: ", newSelected)
     nextBatch(newSelected)
   }
 
