@@ -45,9 +45,11 @@ function App() {
     if(step === images.length) {
       const run_id = window.location.pathname.replace("/", "")
       setIsFinished(true)
-      console.log("This is what we are sending to the backend!", updatedBatch)
+      // In case we doesn't find in the last step
+      const batchToSend = updatedBatch ? updatedBatch : allSelected;
+      console.log("This is what we are sending to the backend!", batchToSend)
       sendFinishToServer({
-        steps: updatedBatch,
+        steps: batchToSend,
         run_id
       })
     }
